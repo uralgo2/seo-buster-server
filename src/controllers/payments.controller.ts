@@ -55,6 +55,8 @@ export class PaymentsController {
         }
         console.debug(status)
         console.debug(await this.paymentsService.GetOrder(orderId))
+
+        return 'OK'
     }
 
     @Post('')
