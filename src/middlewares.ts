@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from 'express'
 class LogsMiddleware implements NestMiddleware {
     private readonly logger = new Logger('HTTP')
 
-    private static readonly Debug = false
+    private static readonly Debug = true //false
 
     use(request: Request, response: Response, next: NextFunction) {
         response.on('finish', () => {
