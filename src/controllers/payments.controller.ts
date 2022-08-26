@@ -53,8 +53,6 @@ export class PaymentsController {
                 } руб. Статус: ${status}`,
             )
         }
-        console.debug(status)
-        console.debug(await this.paymentsService.GetOrder(orderId))
 
         return 'OK'
     }
