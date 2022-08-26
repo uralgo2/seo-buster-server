@@ -22,17 +22,19 @@ export class PaymentsService {
     }
 
     public async RequestInit(order: IOrder): Promise<ITinkoffInitResponse> {
+        const key = this.configService.get<string>('TERMINAL_KEY')
+
+        console.debug(key)
+
         const data = (
             await this.httpService
                 .post('https://securepay.tinkoff.ru/v2/Init', {
-                    body: {
-                        TerminalKey: this.configService.get<string>('TERMINAL_KEY'),
-                        Amount: order.amount,
-                        Description: 'Пополнение баланса на сервисе seobuster.ru',
-                        OrderId: order._id,
-                        NotificationURL:
-                          'https://seobuster.ru/api/payment/notification',
-                    }
+                    TerminalKey: key,
+                    Amount: order.amount,
+                    Description: 'Пополнение баланса на сервисе seobuster.ru',
+                    OrderId: order._id,
+                    NotificationURL:
+                        'https://seobuster.ru/api/payment/notification',
                 })
                 .toPromise()
         ).data
