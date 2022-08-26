@@ -29,6 +29,8 @@ import { DefaultsController } from './controllers/defaults.controller'
 import { DefaultsService } from './services/defaults.service'
 import { TasksWithoutProjectController } from './controllers/tasks.without.project.controller'
 import { ConfigModule } from "@nestjs/config";
+import { PaymentsController } from "./controllers/payments.controller";
+import { PaymentsService } from "./services/payments.service";
 
 const RedisStore = connectRedis(session)
 const redisClient = createClient({ legacyMode: true })
@@ -64,6 +66,7 @@ redisClient.connect().catch(console.error)
         UploadController,
         DefaultsController,
         TasksWithoutProjectController,
+        PaymentsController,
     ],
     providers: [
         AppService,
@@ -76,6 +79,7 @@ redisClient.connect().catch(console.error)
         CitiesService,
         UploadService,
         DefaultsService,
+        PaymentsService,
         {
             provide: APP_FILTER,
             useClass: HttpExceptionFilter,
