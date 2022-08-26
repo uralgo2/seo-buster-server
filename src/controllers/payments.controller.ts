@@ -22,6 +22,7 @@ export class PaymentsController {
     ) {}
 
     @Post('notification')
+    @Level(UserRoleEnum.All)
     @HttpCode(HttpStatus.OK)
     async Notification(
         @Body('OrderId') orderId: string,
