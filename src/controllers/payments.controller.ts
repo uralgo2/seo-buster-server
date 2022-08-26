@@ -5,6 +5,7 @@ import {
     HttpStatus,
     Post,
     Session,
+    Request,
 } from '@nestjs/common'
 import { PaymentsService, TinkoffStatus } from '../services/payments.service'
 import { ISession, UserRoleEnum } from '../utils.types'
@@ -25,6 +26,7 @@ export class PaymentsController {
     async Notification(
         @Body('OrderId') orderId: string,
         @Body('Status') status: TinkoffStatus,
+        @Request() req: Request,
     ) {
         if (status == TinkoffStatus.CONFIRMED) {
             const order = await this.paymentsService.GetOrder(orderId)
@@ -55,6 +57,7 @@ export class PaymentsController {
         }
 
         console.debug(status)
+        console.debug(await req.json())
 
         return 'OK'
     }
