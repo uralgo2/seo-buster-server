@@ -8,7 +8,7 @@ import {
     Request,
 } from '@nestjs/common'
 import { PaymentsService, TinkoffStatus } from '../services/payments.service'
-import { ISession, UserRoleEnum } from '../utils.types'
+import { IRequest, ISession, UserRoleEnum } from "../utils.types";
 import { Level } from '../decorators'
 import { TelegramBotService } from '../services/telegram.bot.service'
 import { UsersService } from '../services/users.service'
@@ -26,7 +26,7 @@ export class PaymentsController {
     async Notification(
         @Body('OrderId') orderId: string,
         @Body('Status') status: TinkoffStatus,
-        @Request() req: Request,
+        @Request() req: IRequest,
     ) {
         if (status == TinkoffStatus.CONFIRMED) {
             const order = await this.paymentsService.GetOrder(orderId)
@@ -57,7 +57,7 @@ export class PaymentsController {
         }
 
         console.debug(status)
-        console.debug(await req.json())
+        console.debug(req.body)
 
         return 'OK'
     }
