@@ -3,6 +3,7 @@ import {
     Controller,
     HttpCode,
     HttpStatus,
+    Logger,
     Post,
     Request,
     Session,
@@ -21,6 +22,8 @@ export class PaymentsController {
         private readonly usersService: UsersService,
     ) {}
 
+    private readonly logger = new Logger(PaymentsController.name)
+
     @Post('notification')
     @Level(UserRoleEnum.All)
     @HttpCode(HttpStatus.OK)
@@ -38,10 +41,14 @@ export class PaymentsController {
                 },
             })
 
-            await this.telegramBotService.NotifyUser(
-                order.user,
-                `Успешное пополнение на ${amount} руб`,
-            )
+            try {
+                await this.telegramBotService.NotifyUser(
+                    order.user,
+                    `Успешное пополнение на ${amount} руб`,
+                )
+            } catch (e) {
+                this.logger.error(e.message)
+            }
         } else if (
             status == TinkoffStatus.REJECTED ||
             status == TinkoffStatus.AUTH_FAIL ||
@@ -49,20 +56,27 @@ export class PaymentsController {
         ) {
             const order = await this.paymentsService.GetOrder(orderId)
 
-            await this.telegramBotService.NotifyUser(
-                order.user,
-                `Неуспешное пополнение на ${
-                    order.amount / 100
-                } руб. Статус: ${status}`,
-            )
+            try {
+                await this.telegramBotService.NotifyUser(
+                    order.user,
+                    `Неуспешное пополнение на ${
+                        order.amount / 100
+                    } руб. Статус: ${status}`,
+                )
+            } catch (e) {
+                this.logger.error(e.message)
+            }
         } else if (status == TinkoffStatus.REFUNDED) {
             const order = await this.paymentsService.GetOrder(orderId)
 
-            await this.telegramBotService.NotifyUser(
-                order.user,
-                `Успешный возврат средств`,
-            )
-
+            try {
+                await this.telegramBotService.NotifyUser(
+                    order.user,
+                    `Успешный возврат средств`,
+                )
+            } catch (e) {
+                this.logger.error(e.message)
+            }
             await this.usersService.PatchUser(order.user, {
                 $inc: {
                     balance: -order.amount / 100,
