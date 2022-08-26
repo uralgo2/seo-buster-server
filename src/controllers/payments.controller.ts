@@ -4,11 +4,11 @@ import {
     HttpCode,
     HttpStatus,
     Post,
-    Session,
     Request,
+    Session,
 } from '@nestjs/common'
 import { PaymentsService, TinkoffStatus } from '../services/payments.service'
-import { IRequest, ISession, UserRoleEnum } from "../utils.types";
+import { IRequest, ISession, UserRoleEnum } from '../utils.types'
 import { Level } from '../decorators'
 import { TelegramBotService } from '../services/telegram.bot.service'
 import { UsersService } from '../services/users.service'
@@ -54,6 +54,19 @@ export class PaymentsController {
                     order.amount / 100
                 } руб. Статус: ${status}`,
             )
+        } else if (status == TinkoffStatus.REFUNDED) {
+            const order = await this.paymentsService.GetOrder(orderId)
+
+            await this.telegramBotService.NotifyUser(
+                order.user,
+                `Успешный возврат средств`,
+            )
+
+            await this.usersService.PatchUser(order.user, {
+                $inc: {
+                    balance: -order.amount / 100,
+                },
+            })
         }
 
         console.debug(status)
