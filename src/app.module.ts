@@ -31,6 +31,7 @@ import { TasksWithoutProjectController } from './controllers/tasks.without.proje
 import { ConfigModule } from "@nestjs/config";
 import { PaymentsController } from "./controllers/payments.controller";
 import { PaymentsService } from "./services/payments.service";
+import { HttpModule } from "@nestjs/axios";
 
 const RedisStore = connectRedis(session)
 const redisClient = createClient({ legacyMode: true })
@@ -56,6 +57,7 @@ redisClient.connect().catch(console.error)
             botKey: '5440063911:AAHGkRUiLU8inTRrx8OC8mrvEe2w-QQ-gjY',
         }),
         ConfigModule.forRoot(),
+        HttpModule,
     ],
     controllers: [
         AppController,

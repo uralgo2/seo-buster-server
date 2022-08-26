@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { IOrder, Order } from '../schemas/order.schema'
 import { ConfigService } from '@nestjs/config'
+import { HttpService } from '@nestjs/axios'
 
 @Injectable()
 export class PaymentsService {
-    constructor(private configService: ConfigService) {}
+    constructor(
+        private configService: ConfigService,
+        private readonly httpService: HttpService,
+    ) {}
 
     public async GetOrder(id: string): Promise<IOrder> {
         return await Order.findOne({ _id: id }).exec()
@@ -19,10 +23,9 @@ export class PaymentsService {
 
     public async RequestInit(order: IOrder): Promise<ITinkoffInitResponse> {
         return TinkoffResponseInit.Parse(
-            await (
-                await fetch('https://securepay.tinkoff.ru/v2/Init', {
-                    method: 'POST',
-                    body: JSON.stringify({
+            (
+                await this.httpService
+                    .post('https://securepay.tinkoff.ru/v2/Init', {
                         TerminalKey:
                             this.configService.get<string>('TERMINAL_KEY'),
                         Amount: order.amount,
@@ -31,9 +34,9 @@ export class PaymentsService {
                         OrderId: order._id,
                         NotificationURL:
                             'https://seobuster.ru/api/payment/notification',
-                    }),
-                })
-            ).json(),
+                    })
+                    .toPromise()
+            ).data,
         )
     }
 }
