@@ -44,7 +44,7 @@ export class PaymentsController {
             try {
                 await this.telegramBotService.NotifyUser(
                     order.user,
-                    `Успешное пополнение на ${amount} руб`,
+                    `Успешное пополнение на сумму ${amount} руб`,
                 )
             } catch (e) {
                 this.logger.error(e.message)
@@ -59,7 +59,7 @@ export class PaymentsController {
             try {
                 await this.telegramBotService.NotifyUser(
                     order.user,
-                    `Неуспешное пополнение на ${
+                    `Неуспешное пополнение на сумму ${
                         order.amount / 100
                     } руб. Статус: ${status}`,
                 )
@@ -72,7 +72,9 @@ export class PaymentsController {
             try {
                 await this.telegramBotService.NotifyUser(
                     order.user,
-                    `Успешный возврат средств`,
+                    `Успешный возврат средств на сумму ${
+                        order.amount / 100
+                    } руб.`,
                 )
             } catch (e) {
                 this.logger.error(e.message)
