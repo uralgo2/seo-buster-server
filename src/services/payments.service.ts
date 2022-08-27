@@ -39,7 +39,7 @@ export class PaymentsService {
                 .toPromise()
         ).data
 
-        console.debug(data)
+        //console.debug(data)
 
         return TinkoffResponseInit.Parse(data)
     }

@@ -86,8 +86,8 @@ export class PaymentsController {
             })
         }
 
-        console.debug(status)
-        console.debug(req.body)
+        //console.debug(status)
+        //console.debug(req.body)
 
         return 'OK'
     }
